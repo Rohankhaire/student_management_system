@@ -35,6 +35,8 @@ import InstructorsPage from './components/InstructorsPage';
 import StudentsPage from './components/StudentsPage';
 import CurriculumPage from './components/CurriculumPage';
 import SettingsPage from './components/SettingsPage';
+import LoginPage from './components/LoginPage';
+import { useAuth } from './context/AuthContext';
 
 const API_URL = 'http://localhost:10101/api/courses';
 
@@ -50,7 +52,7 @@ const PageWrapper = ({ children }) => (
   </motion.div>
 );
 
-const Sidebar = () => {
+const Sidebar = ({ logout }) => {
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Courses', icon: BookOpen, path: '/courses' },
@@ -84,7 +86,7 @@ const Sidebar = () => {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="nav-item" style={{ cursor: 'pointer' }}>
+        <div className="nav-item" style={{ cursor: 'pointer' }} onClick={logout}>
           <LogOut size={20} />
           <span>Logout</span>
         </div>
@@ -235,17 +237,19 @@ const Header = ({ searchTerm, setSearchTerm }) => {
   );
 };
 
-const DashboardPage = ({ courses, loading, onAddCourse }) => {
+const DashboardPage = ({ user, courses, loading, onAddCourse }) => {
+  const isAdmin = user?.role === 'ROLE_ADMIN';
+
   return (
     <PageWrapper>
       <div style={{ marginBottom: '2.5rem' }}>
-        <h1 style={{ fontSize: '2.25rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back, Admin</h1>
+        <h1 style={{ fontSize: '2.25rem', fontWeight: '800', marginBottom: '0.5rem' }}>Welcome back, {user?.username}</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem' }}>Here's what's happening with your university today.</p>
       </div>
 
       <StatsRow courses={courses} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem', marginTop: '1rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '2fr 1fr' : '1fr', gap: '2rem', marginTop: '1rem' }}>
         <div className="card" style={{ background: 'var(--card-bg)', borderRadius: '24px', border: '1px solid var(--border-color)', padding: '2rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: '700' }}>Recent Courses</h3>
@@ -275,38 +279,41 @@ const DashboardPage = ({ courses, loading, onAddCourse }) => {
           )}
         </div>
 
-        <div className="card" style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', borderRadius: '24px', padding: '2rem', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ background: 'rgba(255,255,255,0.1)', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-              <Plus size={20} />
+        {isAdmin && (
+          <div className="card" style={{ background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', borderRadius: '24px', padding: '2rem', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ background: 'rgba(255,255,255,0.1)', width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <Plus size={20} />
+              </div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>Quick Action</h3>
+              <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem' }}>Need to add a new course to the curriculum? Start here.</p>
             </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>Quick Action</h3>
-            <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.6)', marginBottom: '1.5rem' }}>Need to add a new course to the curriculum? Start here.</p>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onAddCourse}
+              style={{
+                background: 'white',
+                color: '#0f172a',
+                border: 'none',
+                padding: '0.75rem',
+                borderRadius: '12px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                width: '100%'
+              }}
+            >
+              Create New Course
+            </motion.button>
           </div>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onAddCourse}
-            style={{
-              background: 'white',
-              color: '#0f172a',
-              border: 'none',
-              padding: '0.75rem',
-              borderRadius: '12px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              width: '100%'
-            }}
-          >
-            Create New Course
-          </motion.button>
-        </div>
+        )}
       </div>
     </PageWrapper>
   );
 };
 
-const CoursesPage = ({ courses, loading, searchTerm, onAddCourse, onDeleteCourse }) => {
+const CoursesPage = ({ user, courses, loading, searchTerm, onAddCourse, onDeleteCourse }) => {
+  const isAdmin = user?.role === 'ROLE_ADMIN';
   const filteredCourses = courses.filter(course =>
     course.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     course.instructor?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -319,25 +326,27 @@ const CoursesPage = ({ courses, loading, searchTerm, onAddCourse, onDeleteCourse
           <h1 style={{ fontSize: '2rem', fontWeight: '800' }}>Course Catalog</h1>
           <p style={{ color: 'var(--text-secondary)' }}>Browse and manage all available academic courses.</p>
         </div>
-        <motion.button
-          whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(37, 99, 235, 0.2)' }}
-          whileTap={{ scale: 0.95 }}
-          className="btn btn-primary"
-          onClick={onAddCourse}
-          title="Create New Course"
-          style={{
-            background: 'linear-gradient(135deg, var(--accent-color) 0%, #1e40af 100%)',
-            width: '44px',
-            height: '44px',
-            padding: 0,
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          <Plus size={20} />
-        </motion.button>
+        {isAdmin && (
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(37, 99, 235, 0.2)' }}
+            whileTap={{ scale: 0.95 }}
+            className="btn btn-primary"
+            onClick={onAddCourse}
+            title="Create New Course"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-color) 0%, #1e40af 100%)',
+              width: '44px',
+              height: '44px',
+              padding: 0,
+              borderRadius: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Plus size={20} />
+          </motion.button>
+        )}
       </div>
 
       <AnimatePresence mode="wait">
@@ -362,28 +371,30 @@ const CoursesPage = ({ courses, loading, searchTerm, onAddCourse, onDeleteCourse
                   }}>
                     {course.status || 'DRAFT'}
                   </div>
-                  <motion.button
-                    whileHover={{ scale: 1.1, background: '#ef4444' }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => onDeleteCourse(course.id)}
-                    style={{
-                      position: 'absolute',
-                      bottom: '1rem',
-                      right: '1rem',
-                      zIndex: 10,
-                      background: 'rgba(239, 68, 68, 0.8)',
-                      color: 'white',
-                      border: 'none',
-                      padding: '8px',
-                      borderRadius: '10px',
-                      cursor: 'pointer',
-                      backdropFilter: 'blur(4px)',
-                      display: 'flex'
-                    }}
-                    title="Delete Course"
-                  >
-                    <Trash2 size={16} />
-                  </motion.button>
+                  {isAdmin && (
+                    <motion.button
+                      whileHover={{ scale: 1.1, background: '#ef4444' }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => onDeleteCourse(course.id)}
+                      style={{
+                        position: 'absolute',
+                        bottom: '1rem',
+                        right: '1rem',
+                        zIndex: 10,
+                        background: 'rgba(239, 68, 68, 0.8)',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        backdropFilter: 'blur(4px)',
+                        display: 'flex'
+                      }}
+                      title="Delete Course"
+                    >
+                      <Trash2 size={16} />
+                    </motion.button>
+                  )}
                 </div>
                 <div className="course-content">
                   <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--accent-color)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>
@@ -425,6 +436,7 @@ const PlaceholderPage = ({ title, icon: Icon }) => (
 );
 
 function AppContent() {
+  const { user, logout } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -432,15 +444,22 @@ function AppContent() {
   const [toasts, setToasts] = useState([]);
   const location = useLocation();
 
+  const isAdmin = user?.role === 'ROLE_ADMIN';
+
   useEffect(() => {
-    fetchCourses();
-  }, []);
+    if (user) {
+      fetchCourses();
+    }
+  }, [user]);
 
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 800));
-      const response = await fetch(API_URL);
+      const response = await fetch(API_URL, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       const data = await response.json();
       setCourses(data || []);
     } catch (error) {
@@ -460,7 +479,10 @@ function AppContent() {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
         body: JSON.stringify(formData)
       });
       const newCourse = await response.json();
@@ -476,7 +498,12 @@ function AppContent() {
     if (!window.confirm('Are you sure you want to delete this course?')) return;
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       if (response.ok) {
         setCourses(prev => prev.filter(c => c.id !== id));
         showToast('Course removed');
@@ -488,16 +515,20 @@ function AppContent() {
     }
   };
 
+  if (!user) {
+    return <LoginPage />;
+  }
+
   return (
     <>
-      <Sidebar />
+      <Sidebar logout={logout} />
       <div className="main-wrapper">
         <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <main className="page-container">
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<DashboardPage courses={courses} loading={loading} onAddCourse={() => setIsModalOpen(true)} />} />
-              <Route path="/courses" element={<CoursesPage courses={courses} loading={loading} searchTerm={searchTerm} onAddCourse={() => setIsModalOpen(true)} onDeleteCourse={handleDeleteCourse} />} />
+              <Route path="/" element={<DashboardPage user={user} courses={courses} loading={loading} onAddCourse={() => setIsModalOpen(true)} />} />
+              <Route path="/courses" element={<CoursesPage user={user} courses={courses} loading={loading} searchTerm={searchTerm} onAddCourse={() => setIsModalOpen(true)} onDeleteCourse={handleDeleteCourse} />} />
               <Route path="/curriculum" element={<CurriculumPage />} />
               <Route path="/instructors" element={<InstructorsPage />} />
               <Route path="/students" element={<StudentsPage />} />
@@ -507,14 +538,16 @@ function AppContent() {
         </main>
       </div>
 
-      <motion.button
-        className="fab"
-        whileHover={{ scale: 1.1, rotate: 90 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => setIsModalOpen(true)}
-      >
-        <Plus size={24} />
-      </motion.button>
+      {isAdmin && (
+        <motion.button
+          className="fab"
+          whileHover={{ scale: 1.1, rotate: 90 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <Plus size={24} />
+        </motion.button>
+      )}
 
       <AddCourseModal
         isOpen={isModalOpen}
@@ -526,7 +559,7 @@ function AppContent() {
         {toasts.map(toast => (
           <motion.div
             key={toast.id}
-            className="toast"
+            className={`toast toast-${toast.type}`}
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
