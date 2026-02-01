@@ -40,6 +40,21 @@ import { useAuth } from './context/AuthContext';
 
 const API_URL = 'http://localhost:10101/api/courses';
 
+const StudentHubLogo = ({ size = 32, color = 'var(--accent-color)', variant = 'full' }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="shieldGrad" x1="0" y1="0" x2="100" y2="100">
+        <stop offset="0%" stopColor="#2563eb" />
+        <stop offset="100%" stopColor="#7c3aed" />
+      </linearGradient>
+    </defs>
+    <path d="M50 5L10 20V45C10 65 25 85 50 95C75 85 90 65 90 45V20L50 5Z" fill="url(#shieldGrad)" />
+    <path d="M30 45L50 35L70 45L50 55L30 45Z" fill="white" />
+    <path d="M50 55V65" stroke="white" strokeWidth="4" strokeLinecap="round" />
+    <path d="M70 45V55C70 55 68 58 65 58" stroke="white" strokeWidth="3" fill="none" />
+  </svg>
+);
+
 const PageWrapper = ({ children }) => (
   <motion.div
     initial={{ opacity: 0, y: 15 }}
@@ -65,8 +80,8 @@ const Sidebar = ({ logout }) => {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <div style={{ background: 'var(--accent-color)', color: 'white', padding: '8px', borderRadius: '10px' }}>
-          <GraduationCap size={24} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <StudentHubLogo size={36} />
         </div>
         <h2 className="logo" style={{ marginBottom: 0 }}>StudentHub</h2>
       </div>
@@ -227,8 +242,8 @@ const Header = ({ user, searchTerm, setSearchTerm }) => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '4px 12px 4px 4px', background: 'var(--card-hover)', borderRadius: '14px', cursor: 'pointer' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'var(--accent-color)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <User size={18} />
+          <div style={{ width: '32px', height: '32px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <StudentHubLogo size={24} />
           </div>
           <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{user?.username || 'Guest'}</span>
         </div>

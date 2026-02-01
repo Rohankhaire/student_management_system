@@ -4,6 +4,21 @@ import { GraduationCap, Mail, Lock, ArrowRight, Sparkles, User, ShieldCheck } fr
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+const StudentHubLogo = ({ size = 32 }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="shieldGradLogin" x1="0" y1="0" x2="100" y2="100">
+                <stop offset="0%" stopColor="#2563eb" />
+                <stop offset="100%" stopColor="#7c3aed" />
+            </linearGradient>
+        </defs>
+        <path d="M50 5L10 20V45C10 65 25 85 50 95C75 85 90 65 90 45V20L50 5Z" fill="url(#shieldGradLogin)" />
+        <path d="M30 45L50 35L70 45L50 55L30 45Z" fill="white" />
+        <path d="M50 55V65" stroke="white" strokeWidth="4" strokeLinecap="round" />
+        <path d="M70 45V55C70 55 68 58 65 58" stroke="white" strokeWidth="3" fill="none" />
+    </svg>
+);
+
 const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
@@ -96,18 +111,14 @@ const LoginPage = () => {
             >
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <div style={{
-                        width: '64px',
-                        height: '64px',
-                        background: 'var(--accent-color)',
-                        color: 'white',
-                        borderRadius: '20px',
+                        width: '74px',
+                        height: '74px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        margin: '0 auto 1.5rem',
-                        boxShadow: '0 10px 20px rgba(37, 99, 235, 0.3)'
+                        margin: '0 auto 1.5rem'
                     }}>
-                        <GraduationCap size={32} />
+                        <StudentHubLogo size={74} />
                     </div>
                     <h1 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '0.5rem' }}>
                         {isLogin ? 'Welcome Back' : 'Join StudentHub'}
