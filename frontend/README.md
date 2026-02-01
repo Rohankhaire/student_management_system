@@ -1,16 +1,36 @@
-# React + Vite
+# 🎨 StudentHub Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)
 
-Currently, two official plugins are available:
+This is the interactive frontend for the StudentHub Management System. It features a modern, glassmorphic design system and extreme micro-interactivity.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Highlights
+- **Role-Based UI**: Dynamic rendering based on JWT user roles (Admin vs Student).
+- **Smooth Navigation**: Page transitions and staggered animations via `framer-motion`.
+- **Stateless Connectivity**: Fully integrated with the Spring Boot JWT authentication system.
+- **Premium Aesthetics**: Curated color palettes, modern typography, and responsive layouts.
 
-## React Compiler
+## 🚀 Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-## Expanding the ESLint configuration
+2. **Environment Configuration**:
+   The app is pre-configured to point to `http://localhost:10101` for API requests. Ensure the backend is running.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+3. **Development Mode**:
+   ```bash
+   npm run dev
+   ```
+
+## 📂 Project Structure
+- `/src/context`: Auth state management.
+- `/src/components`: Reusable UI components (Dashboard, Catalog, Login).
+- `/src/App.jsx`: Main routing and protected page logic.
+
+## 🔑 Login Guide
+Use the **"Demo Access"** section on the login page to quickly switch between Admin and Student perspectives.
