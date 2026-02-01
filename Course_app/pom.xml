@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>student_management_system</artifactId>
+    <artifactId>studenthub</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>student_management_system</name>
+    <name>studenthub</name>
     <description>This is the course app for the student</description>
     <url/>
     <licenses>
