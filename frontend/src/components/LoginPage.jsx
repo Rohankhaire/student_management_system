@@ -246,6 +246,37 @@ const LoginPage = () => {
                 </form>
 
                 <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                    <div style={{ position: 'relative', margin: '1.5rem 0' }}>
+                        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'var(--border-color)', zIndex: 0 }}></div>
+                        <span style={{ position: 'relative', background: 'var(--card-bg)', padding: '0 1rem', fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Demo Access</span>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setUsername('admin@gmail.com');
+                            setPassword('admin@123');
+                        }}
+                        style={{
+                            width: '100%',
+                            padding: '0.75rem',
+                            background: 'var(--accent-glow)',
+                            border: '1px solid var(--accent-color)',
+                            borderRadius: '12px',
+                            color: 'var(--accent-color)',
+                            fontWeight: '700',
+                            fontSize: '0.85rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            marginBottom: '1.5rem'
+                        }}
+                    >
+                        <ShieldCheck size={16} /> Login as Admin (admin@gmail.com)
+                    </button>
+
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                         {isLogin ? "Don't have an account?" : "Already have an account?"}
                         <button

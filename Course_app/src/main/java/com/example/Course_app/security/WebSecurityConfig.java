@@ -51,7 +51,9 @@ public class WebSecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> 
           auth.requestMatchers("/api/auth/**").permitAll()
-              .requestMatchers("/api/courses/**").permitAll() // Keeping courses public for now to avoid breaking existing frontend before transition
+              .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/courses/**").permitAll()
+              .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/courses/**").hasAuthority("ROLE_ADMIN")
+              .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/courses/**").hasAuthority("ROLE_ADMIN")
               .anyRequest().authenticated()
         );
     

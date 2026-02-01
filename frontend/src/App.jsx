@@ -95,7 +95,7 @@ const Sidebar = ({ logout }) => {
   );
 };
 
-const Header = ({ searchTerm, setSearchTerm }) => {
+const Header = ({ user, searchTerm, setSearchTerm }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, text: 'New instructor joined: Dr. Aris', time: '2m ago', unread: true },
@@ -230,7 +230,7 @@ const Header = ({ searchTerm, setSearchTerm }) => {
           <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: 'var(--accent-color)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <User size={18} />
           </div>
-          <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Admin</span>
+          <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{user?.username || 'Guest'}</span>
         </div>
       </div>
     </header>
@@ -523,7 +523,7 @@ function AppContent() {
     <>
       <Sidebar logout={logout} />
       <div className="main-wrapper">
-        <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <Header user={user} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <main className="page-container">
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
