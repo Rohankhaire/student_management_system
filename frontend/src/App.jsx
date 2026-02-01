@@ -31,6 +31,10 @@ import SkeletonLoader from './components/SkeletonLoader';
 import EmptyState from './components/EmptyState';
 import StatsRow from './components/StatsRow';
 import AddCourseModal from './components/AddCourseModal';
+import InstructorsPage from './components/InstructorsPage';
+import StudentsPage from './components/StudentsPage';
+import CurriculumPage from './components/CurriculumPage';
+import SettingsPage from './components/SettingsPage';
 
 const API_URL = 'http://localhost:10101/api/courses';
 
@@ -468,6 +472,22 @@ function AppContent() {
     }
   };
 
+  const handleDeleteCourse = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this course?')) return;
+
+    try {
+      const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (response.ok) {
+        setCourses(prev => prev.filter(c => c.id !== id));
+        showToast('Course removed');
+      } else {
+        showToast('Delete failed', 'error');
+      }
+    } catch (error) {
+      showToast('Connection error', 'error');
+    }
+  };
+
   return (
     <>
       <Sidebar />
@@ -477,11 +497,11 @@ function AppContent() {
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<DashboardPage courses={courses} loading={loading} onAddCourse={() => setIsModalOpen(true)} />} />
-              <Route path="/courses" element={<CoursesPage courses={courses} loading={loading} searchTerm={searchTerm} onAddCourse={() => setIsModalOpen(true)} />} />
-              <Route path="/curriculum" element={<PlaceholderPage title="Curriculum & Subjects" icon={BookOpen} />} />
-              <Route path="/instructors" element={<PlaceholderPage title="Instructors" icon={UserSquare} />} />
-              <Route path="/students" element={<PlaceholderPage title="Students" icon={Users} />} />
-              <Route path="/settings" element={<PlaceholderPage title="Settings" icon={Settings} />} />
+              <Route path="/courses" element={<CoursesPage courses={courses} loading={loading} searchTerm={searchTerm} onAddCourse={() => setIsModalOpen(true)} onDeleteCourse={handleDeleteCourse} />} />
+              <Route path="/curriculum" element={<CurriculumPage />} />
+              <Route path="/instructors" element={<InstructorsPage />} />
+              <Route path="/students" element={<StudentsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </AnimatePresence>
         </main>
